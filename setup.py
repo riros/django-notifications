@@ -9,13 +9,11 @@ try:
 except ImportError:
     from distutils.core import setup  # pylint: disable=no-name-in-module,import-error
 
-
 _version_re = re.compile(r'__version__\s+=\s+(.*)')  # pylint: disable=invalid-name
 
 with open('notifications/__init__.py', 'rb') as f:
     version = str(ast.literal_eval(_version_re.search(  # pylint: disable=invalid-name
         f.read().decode('utf-8')).group(1)))
-
 
 setup(
     name='django-notifications-hq',
@@ -44,7 +42,12 @@ setup(
         'notifications.base',
         'notifications.templatetags',
         'notifications.migrations',
+        'notifications.static',
+
     ],
+    package_data={
+        "*": ["**"]
+    },
     include_package_data=True,
     classifiers=[
         'Development Status :: 5 - Production/Stable',

@@ -7,6 +7,7 @@ var notify_mark_all_unread_url;
 var notify_refresh_period = 15000;
 // Set notify_mark_as_read to true to mark notifications as read when fetched
 var notify_mark_as_read = false;
+var nofity_mark_as_read_url;
 var consecutive_misfires = 0;
 var registered_functions = [];
 

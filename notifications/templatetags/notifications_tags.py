@@ -18,12 +18,12 @@ register = Library()
 
 
 def get_cached_notification_unread_count(user):
-
     return cache.get_or_set(
         'cache_notification_unread_count',
         user.notifications.unread().count,
         settings.get_config()['CACHE_TIMEOUT']
     )
+
 
 def notifications_unread(context):
     user = user_context(context)
@@ -73,6 +73,7 @@ def register_notify_callbacks(badge_class='live_notify_badge',  # pylint: disabl
         notify_mark_all_unread_url='{mark_all_unread_url}';
         notify_refresh_period={refresh};
         notify_mark_as_read={mark_as_read};
+        nofity_mark_as_read_url='{nofity_mark_as_read_url}';
     """.format(
         badge_class=badge_class,
         menu_class=menu_class,
@@ -81,7 +82,8 @@ def register_notify_callbacks(badge_class='live_notify_badge',  # pylint: disabl
         unread_url=reverse('notifications:unread'),
         mark_all_unread_url=reverse('notifications:mark_all_as_read'),
         fetch_count=fetch,
-        mark_as_read=str(mark_as_read).lower()
+        mark_as_read=str(mark_as_read).lower(),
+        nofity_mark_as_read_url=reverse('notifications:mark_as_read_'),
     )
 
     # add a nonce value to the script tag if one is provided
@@ -99,9 +101,12 @@ def live_notify_badge(context, badge_class='live_notify_badge'):
     user = user_context(context)
     if not user:
         return ''
-
-    html = "<span class='{badge_class}'>{unread}</span>".format(
-        badge_class=badge_class, unread=get_cached_notification_unread_count(user)
+    unread_count = get_cached_notification_unread_count(user)
+    hidden_class = ''
+    if unread_count == 0:
+        hidden_class = 'hidden'
+    html = "<span class='{badge_class} {hidden_class}'>{unread}</span>".format(
+        badge_class=badge_class, unread=unread_count, hidden_class=hidden_class
     )
     return format_html(html)
 
